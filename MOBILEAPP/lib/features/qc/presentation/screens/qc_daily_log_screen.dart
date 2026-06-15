@@ -253,11 +253,6 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
       body: groupedItemsAsync.when(
         data: (groupedItems) {
           final categories = groupedItems.keys.toList()..sort();
-          
-          List<QCItem> categoryItems = [];
-          if (_selectedCategory != null) {
-            categoryItems = groupedItems[_selectedCategory] ?? [];
-          }
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -337,6 +332,10 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
                         value: _selectedProcess,
                         decoration: const InputDecoration(
                           labelText: 'Process',
+                          labelStyle: TextStyle(color: Colors.black54),
+                          border: OutlineInputBorder(),
+                        ),
+                        style: const TextStyle(color: Colors.black),
                         items: _processes.map((proc) => DropdownMenuItem(
                           value: proc,
                           child: Text(proc),

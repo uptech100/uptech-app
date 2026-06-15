@@ -107,12 +107,7 @@ class _TodaysTasksScreenState extends ConsumerState<TodaysTasksScreen> {
     }
   }
   
-  Color _getStatusColor(String status) {
-    if (status.contains('Delayed')) return AppTheme.danger;
-    if (status.contains('Early')) return Colors.teal;
-    if (status.contains('time')) return Colors.green;
-    return AppTheme.textSecondary;
-  }
+
 
   @override
   Widget build(BuildContext context) {
