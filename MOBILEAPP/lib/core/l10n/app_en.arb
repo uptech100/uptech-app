@@ -1,0 +1,10 @@
+{
+    "appTitle": "Company All Task Management",
+    "login": "Login",
+    "employeeId": "Employee ID",
+    "mobileNumber": "Mobile Number",
+    "password": "Password",
+    "selectRole": "Select Role",
+    "welcome": "Welcome",
+    "dashboard": "Dashboard"
+}

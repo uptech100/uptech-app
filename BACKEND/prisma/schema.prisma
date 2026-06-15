@@ -1,0 +1,327 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  permissions Json?
+  users       User[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Department {
+  id             Int      @id @default(autoincrement())
+  name           String   @unique
+  departmentCode String?
+  description    String?
+  status         String   @default("Active")
+  users          User[]
+  checklists     ChecklistTemplate[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model User {
+  id             Int             @id @default(autoincrement())
+  employeeId     String          @unique
+  name           String
+  mobile         String          @unique
+  email          String?         @unique
+  passwordHash   String
+  roleId         Int
+  role           Role            @relation(fields: [roleId], references: [id])
+  departmentId   Int
+  department     Department      @relation(fields: [departmentId], references: [id])
+  status         String          @default("Active")
+  attendances    Attendance[]
+  leaveRequests  LeaveRequest[]
+  tasksAssigned  Task[]          @relation("AssignedTasks")
+  tasksCreated   Task[]          @relation("CreatedTasks")
+  delegations    Delegation[]
+  notifications  Notification[]
+  announcements  Announcement[]
+  payrolls       Payroll[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  dailyWorkLogs  DailyWorkLog[]
+  checklistTemplates ChecklistTemplate[] @relation("ChecklistTemplates")
+  checklistLogs  ChecklistLog[]  @relation("ChecklistLogs")
+  qcDailyLogs    QCDailyLog[]    @relation("UserQCDailyLogs")
+}
+
+model Attendance {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  date      DateTime  @db.Date
+  status    String    // Present, Absent, Half-Day
+  checkIn   DateTime?
+  checkOut  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  @@unique([userId, date])
+}
+
+model LeaveRequest {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  startDate DateTime @db.Date
+  endDate   DateTime @db.Date
+  reason    String
+  status    String   @default("Pending") // Pending, Approved, Rejected
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Task {
+  id            Int      @id @default(autoincrement())
+  title         String
+  description   String?
+  targetQty     Int?
+  machineId     String?
+  status        String   @default("Pending") // Pending, In Progress, Completed
+  priority      String   @default("Normal")
+  dueDate       DateTime?
+  startTime     DateTime?
+  endTime       DateTime?
+  assignedToId  Int
+  assignedTo    User     @relation("AssignedTasks", fields: [assignedToId], references: [id])
+  createdById   Int
+  createdBy     User     @relation("CreatedTasks", fields: [createdById], references: [id])
+  timeTaken     Float?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Delegation {
+  id        Int      @id @default(autoincrement())
+  taskId    Int
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  status    String   @default("Pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  body      String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Announcement {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductionEntry {
+  id        Int      @id @default(autoincrement())
+  machineId String
+  itemId    String
+  quantity  Int
+  date      DateTime @db.Date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Inventory {
+  id        Int      @id @default(autoincrement())
+  itemName  String
+  sku       String   @unique
+  quantity  Int      @default(0)
+  location  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SalesOrder {
+  id           Int      @id @default(autoincrement())
+  customerName String
+  totalAmount  Float
+  status       String   @default("Pending")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model DispatchOrder {
+  id             Int      @id @default(autoincrement())
+  salesOrderId   Int
+  vehicleNumber  String?
+  status         String   @default("Scheduled")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model QualityCheck {
+  id              Int      @id @default(autoincrement())
+  productionEntryId Int
+  inspectorName   String
+  status          String   // Passed, Failed
+  remarks         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Payroll {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  month     String
+  year      Int
+  amount    Float
+  status    String   @default("Pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ReportLog {
+  id        Int      @id @default(autoincrement())
+  reportType String
+  generatedBy String
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  userId    Int?
+  details   Json?
+  createdAt DateTime @default(now())
+}
+
+model WorkProcess {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  status    String      @default("Active")
+  entries   WorkEntry[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model WorkProduct {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  status    String      @default("Active")
+  entries   WorkEntry[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model DailyWorkLog {
+  id         Int         @id @default(autoincrement())
+  userId     Int
+  user       User        @relation(fields: [userId], references: [id])
+  date       DateTime    @db.Date
+  totalHours Float       @default(0)
+  isLocked   Boolean     @default(false)
+  entries    WorkEntry[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@unique([userId, date])
+}
+
+model WorkEntry {
+  id          Int          @id @default(autoincrement())
+  dailyLogId  Int
+  dailyLog    DailyWorkLog @relation(fields: [dailyLogId], references: [id])
+  startTime   DateTime
+  endTime     DateTime
+  processId   Int
+  process     WorkProcess  @relation(fields: [processId], references: [id])
+  productId   Int
+  product     WorkProduct  @relation(fields: [productId], references: [id])
+  size        String?
+  sjoNumber   String?
+  quantity    String?
+  uom         String?
+  remarks     String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model ChecklistTemplate {
+  id             Int          @id @default(autoincrement())
+  taskName       String
+  departmentId   Int
+  department     Department   @relation(fields: [departmentId], references: [id])
+  userId         Int
+  user           User         @relation("ChecklistTemplates", fields: [userId], references: [id])
+  frequency      String       // Daily, Weekly, Monthly
+  frequencyValue Int?         // Day of week (1-7) or Day of month (1-31)
+  status         String       @default("Active")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  logs           ChecklistLog[]
+}
+
+model ChecklistLog {
+  id           Int               @id @default(autoincrement())
+  templateId   Int
+  template     ChecklistTemplate @relation(fields: [templateId], references: [id])
+  userId       Int
+  user         User              @relation("ChecklistLogs", fields: [userId], references: [id])
+  date         DateTime          @db.Date
+  status       String            @default("Pending") // Pending, Completed
+  completedAt  DateTime?
+  remarks      String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  
+  
+  @@unique([templateId, date])
+}
+
+model QCItem {
+  id          Int      @id @default(autoincrement())
+  itemCode    String   @unique
+  description String
+  uom         String?
+  category    String   // mapped to 'Particulars'
+  hsnCode     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  reportEntries QCReportEntry[]
+}
+
+model QCDailyLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation("UserQCDailyLogs", fields: [userId], references: [id])
+  date      DateTime @db.Date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  entries   QCReportEntry[]
+
+  @@unique([userId, date])
+}
+
+model QCReportEntry {
+  id         Int        @id @default(autoincrement())
+  qcLogId    Int
+  qcLog      QCDailyLog @relation(fields: [qcLogId], references: [id])
+  qcItemId   Int
+  qcItem     QCItem     @relation(fields: [qcItemId], references: [id])
+  process    String?
+  quantity   Int
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
