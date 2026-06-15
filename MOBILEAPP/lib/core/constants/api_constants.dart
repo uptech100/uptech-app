@@ -7,10 +7,10 @@ class ApiConstants {
   /// Example: 'https://api.uptech.com/api'
   // TODO: CHANGE THIS TO YOUR ACTUAL PRODUCTION DOMAIN BEFORE HOSTING!
   // Example: 'https://api.uptech.com/api' or 'http://192.168.1.100:3000/api'
-  static const String PRODUCTION_API_URL = 'https://your-production-server.com/api';
+  static const String PRODUCTION_API_URL = 'https://uptech-app-production.up.railway.app/api';
 
   // Set this to true before generating the final APK/Web build
-  static const bool isProduction = false;
+  static const bool isProduction = true;
 
   static String get baseUrl {
     if (isProduction) {
