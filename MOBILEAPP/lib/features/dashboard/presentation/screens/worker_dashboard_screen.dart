@@ -34,6 +34,7 @@ class WorkerDashboardScreen extends ConsumerWidget {
     final dept = departmentAsync.value?.toUpperCase() ?? '';
     final isQC = dept.contains('QC') || dept.contains('QUALITY');
     final isChecklistEligible = dept.contains('ACCOUNT') || dept.contains('HR') || dept.contains('PC') || dept.contains('PROCESS');
+    final isProduction = dept.contains('PRODUCTION') || dept.contains('PROD');
 
     return Scaffold(
       appBar: AppBar(
@@ -52,80 +53,81 @@ class WorkerDashboardScreen extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          // Professional Hero Button
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
-            child: InkWell(
-              onTap: () {
-                if (isQC) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const QCDailyLogScreen()),
-                  );
-                } else {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const DailyWorkLogScreen()),
-                  );
-                }
-              },
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppTheme.primaryColor, AppTheme.primaryColor.withOpacity(0.8)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+          // Professional Hero Button for Production & Quality
+          if (isProduction || isQC)
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+              child: InkWell(
+                onTap: () {
+                  if (isQC) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const QCDailyLogScreen()),
+                    );
+                  } else {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const DailyWorkLogScreen()),
+                    );
+                  }
+                },
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [AppTheme.primaryColor, AppTheme.primaryColor.withOpacity(0.8)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.primaryColor.withOpacity(0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppTheme.primaryColor.withOpacity(0.3),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        shape: BoxShape.circle,
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.add_task, color: Colors.white, size: 32),
                       ),
-                      child: const Icon(Icons.add_task, color: Colors.white, size: 32),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            isQC ? 'Add QC Daily Log' : 'Add Daily Task',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              isQC ? 'Add QC Daily Log' : 'Add Daily Task',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            isQC ? 'Update your quality control log' : 'Update your today\'s work log',
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14,
+                            const SizedBox(height: 4),
+                            Text(
+                              isQC ? 'Update your quality control log' : 'Update your today\'s work log',
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const Icon(Icons.arrow_forward_ios, color: Colors.white70, size: 16),
-                  ],
+                      const Icon(Icons.arrow_forward_ios, color: Colors.white70, size: 16),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
           // My Checklists Hero Button
           if (isChecklistEligible)
             Padding(
