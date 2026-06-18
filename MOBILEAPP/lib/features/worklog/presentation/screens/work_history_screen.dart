@@ -129,7 +129,11 @@ class _WorkHistoryScreenState extends ConsumerState<WorkHistoryScreen> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
-              ref.read(bottomNavIndexProvider.notifier).state = 0;
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                ref.read(bottomNavIndexProvider.notifier).state = 0;
+              }
             },
           ),
           bottom: TabBar(

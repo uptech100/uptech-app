@@ -122,7 +122,11 @@ class _TodaysTasksScreenState extends ConsumerState<TodaysTasksScreen> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              ref.read(bottomNavIndexProvider.notifier).state = 0; // Go back to Home
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                ref.read(bottomNavIndexProvider.notifier).state = 0; // Go back to Home
+              }
             },
           ),
           actions: [
