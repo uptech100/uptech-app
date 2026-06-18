@@ -7,24 +7,49 @@ async function main() {
   console.log('Seeding database...');
 
   // Create Roles
-  const adminRole = await prisma.role.upsert({
-    where: { name: 'Admin' },
-    update: {},
-    create: { name: 'Admin', permissions: { all: true } },
-  });
+  const roles = ['Admin', 'Worker', 'Executive 1', 'Executive 2'];
+  const roleMap: Record<string, any> = {};
+  
+  for (const r of roles) {
+    roleMap[r] = await prisma.role.upsert({
+      where: { name: r },
+      update: {},
+      create: { 
+        name: r, 
+        permissions: r === 'Admin' ? { all: true } : { dashboard: true } 
+      },
+    });
+  }
 
-  const workerRole = await prisma.role.upsert({
-    where: { name: 'Worker' },
-    update: {},
-    create: { name: 'Worker', permissions: { dashboard: true } },
-  });
+  const adminRole = roleMap['Admin'];
 
-  // Create Department
-  const adminDept = await prisma.department.upsert({
-    where: { name: 'Management' },
-    update: {},
-    create: { name: 'Management' },
-  });
+  // Create Departments
+  const departments = [
+    'Management',
+    'Production',
+    'Process Coordinator',
+    'Quality',
+    'Accounts',
+    'Dispatch',
+    'Sales',
+    'Stores',
+    'HR',
+    'EA',
+    'MIS',
+    'Purchase'
+  ];
+  
+  const deptMap: Record<string, any> = {};
+
+  for (const d of departments) {
+    deptMap[d] = await prisma.department.upsert({
+      where: { name: d },
+      update: {},
+      create: { name: d },
+    });
+  }
+  
+  const adminDept = deptMap['Management'];
 
   // Create Admin User
   const hashedPassword = await bcrypt.hash('uptech', 10);
