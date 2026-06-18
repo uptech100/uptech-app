@@ -76,8 +76,15 @@ export const deleteDepartment = async (req: Request, res: Response) => {
     // Check if department has users
     const userCount = await prisma.user.count({ where: { departmentId: Number(id) } });
     if (userCount > 0) {
-      return res.status(400).json({ message: 'Cannot delete department with assigned users. Remove users first.' });
+      return res.status(400).json({ message: 'Cannot delete department with assigned users. Remove or reassign users first.' });
     }
+
+    // Check if department has checklist templates
+    const checklistCount = await prisma.checklistTemplate.count({ where: { departmentId: Number(id) } });
+    if (checklistCount > 0) {
+      return res.status(400).json({ message: 'Cannot delete department with assigned checklist templates. Remove checklists first.' });
+    }
+
     await prisma.department.delete({ where: { id: Number(id) } });
     res.json({ message: 'Department deleted successfully' });
   } catch (error) {
