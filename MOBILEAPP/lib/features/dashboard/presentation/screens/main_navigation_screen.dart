@@ -5,6 +5,8 @@ import '../../../tasks/presentation/screens/todays_tasks_screen.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
 import '../../../worklog/presentation/screens/work_history_screen.dart';
 import '../../../worklog/presentation/screens/daily_work_log_screen.dart';
+import '../../../qc/presentation/screens/qc_daily_log_screen.dart';
+import '../../../qc/presentation/screens/qc_history_screen.dart';
 import '../../../../core/theme/app_theme.dart';
 
 final bottomNavIndexProvider = StateProvider<int>((ref) => 0);
@@ -12,26 +14,20 @@ final bottomNavIndexProvider = StateProvider<int>((ref) => 0);
 class MainNavigationScreen extends ConsumerWidget {
   const MainNavigationScreen({super.key});
 
-  final List<Widget> _screens = const [
-    WorkerDashboardScreen(), // Home Tab
-    TodaysTasksScreen(),     // Tasks Tab
-    DailyWorkLogScreen(),    // Daily Log Tab
-    WorkHistoryScreen(),     // History Tab
-    ProfileScreen(),         // Profile Tab
-  ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(bottomNavIndexProvider);
     final departmentAsync = ref.watch(userDepartmentProvider);
     final dept = departmentAsync.value?.toUpperCase() ?? '';
     final isProduction = dept.contains('PRODUCTION') || dept.contains('PROD');
+    final isQC = dept.contains('QC') || dept.contains('QUALITY');
+    final showDailyLogs = isProduction || isQC;
 
     final List<Widget> screens = [
       const WorkerDashboardScreen(), // Home Tab
       const TodaysTasksScreen(),     // Tasks Tab
-      if (isProduction) const DailyWorkLogScreen(),    // Daily Log Tab
-      if (isProduction) const WorkHistoryScreen(),     // History Tab
+      if (showDailyLogs) isQC ? const QCDailyLogScreen() : const DailyWorkLogScreen(),    // Daily Log Tab
+      if (showDailyLogs) isQC ? const QCHistoryScreen() : const WorkHistoryScreen(),     // History Tab
       const ProfileScreen(),         // Profile Tab
     ];
 
@@ -46,13 +42,13 @@ class MainNavigationScreen extends ConsumerWidget {
         activeIcon: Icon(Icons.task_alt),
         label: 'Delegations',
       ),
-      if (isProduction)
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.assignment_add),
-          activeIcon: Icon(Icons.assignment_turned_in),
-          label: 'Daily Log',
+      if (showDailyLogs)
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.assignment_add),
+          activeIcon: const Icon(Icons.assignment_turned_in),
+          label: isQC ? 'QC Log' : 'Daily Log',
         ),
-      if (isProduction)
+      if (showDailyLogs)
         const BottomNavigationBarItem(
           icon: Icon(Icons.history),
           activeIcon: Icon(Icons.history),
