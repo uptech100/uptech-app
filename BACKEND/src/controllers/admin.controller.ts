@@ -288,6 +288,28 @@ export const deleteUser = async (req: Request, res: Response) => {
     await prisma.announcement.deleteMany({ where: { authorId: userId } });
     await prisma.task.deleteMany({ where: { OR: [{ assignedToId: userId }, { createdById: userId }] } });
 
+    // Handle DailyWorkLog and WorkEntry
+    const dailyLogs = await prisma.dailyWorkLog.findMany({ where: { userId }, select: { id: true } });
+    if (dailyLogs.length > 0) {
+      await prisma.workEntry.deleteMany({ where: { dailyLogId: { in: dailyLogs.map(l => l.id) } } });
+      await prisma.dailyWorkLog.deleteMany({ where: { userId } });
+    }
+
+    // Handle QCDailyLog and QCReportEntry
+    const qcLogs = await prisma.qCDailyLog.findMany({ where: { userId }, select: { id: true } });
+    if (qcLogs.length > 0) {
+      await prisma.qCReportEntry.deleteMany({ where: { qcLogId: { in: qcLogs.map(l => l.id) } } });
+      await prisma.qCDailyLog.deleteMany({ where: { userId } });
+    }
+
+    // Handle Checklists
+    await prisma.checklistLog.deleteMany({ where: { userId } });
+    const templates = await prisma.checklistTemplate.findMany({ where: { userId }, select: { id: true } });
+    if (templates.length > 0) {
+      await prisma.checklistLog.deleteMany({ where: { templateId: { in: templates.map(t => t.id) } } });
+      await prisma.checklistTemplate.deleteMany({ where: { userId } });
+    }
+
     await prisma.user.delete({ where: { id: userId } });
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
