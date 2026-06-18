@@ -129,7 +129,8 @@ export const submitQCReport = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Missing date or entries array.' });
     }
     
-    const targetDate = new Date(date);
+    let targetDate = new Date(date);
+    targetDate = new Date(Date.UTC(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate()));
     
     // Use transaction to ensure data integrity
     const qcLog = await prisma.$transaction(async (tx) => {
