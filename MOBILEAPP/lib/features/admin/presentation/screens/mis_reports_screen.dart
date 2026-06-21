@@ -76,12 +76,9 @@ class _MisReportsScreenState extends ConsumerState<MisReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dates = {
-      'startDate': _startDate.toIso8601String(),
-      'endDate': _endDate.toIso8601String(),
-    };
+    final dateRange = '${_startDate.toIso8601String()}|${_endDate.toIso8601String()}';
 
-    final misDataAsync = ref.watch(misReportsProvider(dates));
+    final misDataAsync = ref.watch(misReportsProvider(dateRange));
 
     return Scaffold(
       backgroundColor: AppTheme.bgLight,

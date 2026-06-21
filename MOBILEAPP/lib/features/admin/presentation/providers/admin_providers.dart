@@ -32,9 +32,12 @@ final productsProvider = FutureProvider<List<dynamic>>((ref) async {
 });
 
 // MIS Reports Provider
-final misReportsProvider = FutureProvider.family<List<dynamic>, Map<String, String>>((ref, dates) async {
+final misReportsProvider = FutureProvider.family<List<dynamic>, String>((ref, dateRange) async {
+  final parts = dateRange.split('|');
+  final startDate = parts[0];
+  final endDate = parts[1];
   final repo = ref.watch(adminRepositoryProvider);
-  return await repo.getMisReports(dates['startDate']!, dates['endDate']!);
+  return await repo.getMisReports(startDate, endDate);
 });
 
 // Dashboard Stats Provider (Computed from departments and users)
