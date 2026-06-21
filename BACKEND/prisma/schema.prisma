@@ -54,6 +54,8 @@ model User {
   checklistTemplates ChecklistTemplate[] @relation("ChecklistTemplates")
   checklistLogs  ChecklistLog[]  @relation("ChecklistLogs")
   qcDailyLogs    QCDailyLog[]    @relation("UserQCDailyLogs")
+  ratingsGiven   UserRating[]    @relation("RatingsGiven")
+  ratingsReceived UserRating[]   @relation("RatingsReceived")
 }
 
 model Attendance {
@@ -325,3 +327,18 @@ model QCReportEntry {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 }
+
+model UserRating {
+  id            Int      @id @default(autoincrement())
+  raterId       Int
+  rater         User     @relation("RatingsGiven", fields: [raterId], references: [id])
+  rateeId       Int
+  ratee         User     @relation("RatingsReceived", fields: [rateeId], references: [id])
+  rating        Float
+  weekStartDate DateTime @db.Date
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([raterId, rateeId, weekStartDate])
+}
+

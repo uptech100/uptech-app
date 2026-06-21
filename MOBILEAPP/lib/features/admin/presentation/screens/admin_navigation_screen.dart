@@ -4,6 +4,7 @@ import '../screens/department_management_screen.dart';
 import '../screens/user_management_screen.dart';
 import '../screens/process_management_screen.dart';
 import '../screens/product_management_screen.dart';
+import '../../ratings/presentation/screens/admin_ratings_screen.dart';
 import '../../../../core/theme/app_theme.dart';
 
 class AdminNavigationScreen extends StatefulWidget {
@@ -22,6 +23,7 @@ class _AdminNavigationScreenState extends State<AdminNavigationScreen> {
     const UserManagementScreen(),
     const ProcessManagementScreen(),
     const ProductManagementScreen(),
+    const AdminRatingsScreen(),
   ];
 
   final List<String> _titles = [
@@ -30,6 +32,7 @@ class _AdminNavigationScreenState extends State<AdminNavigationScreen> {
     'Users',
     'Processes',
     'Products',
+    'Peer Ratings',
   ];
 
   @override
@@ -80,6 +83,11 @@ class _AdminNavigationScreenState extends State<AdminNavigationScreen> {
               icon: Icon(Icons.inventory_2_outlined),
               activeIcon: Icon(Icons.inventory_2),
               label: 'Products',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.star_half_outlined),
+              activeIcon: Icon(Icons.star),
+              label: 'Ratings',
             ),
           ],
         ),

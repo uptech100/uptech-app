@@ -7,6 +7,7 @@ import '../../../worklog/presentation/screens/work_history_screen.dart';
 import '../../../worklog/presentation/screens/daily_work_log_screen.dart';
 import '../../../qc/presentation/screens/qc_daily_log_screen.dart';
 import '../../../qc/presentation/screens/qc_history_screen.dart';
+import '../../../ratings/presentation/screens/rate_peers_screen.dart';
 import '../../../../core/theme/app_theme.dart';
 
 final bottomNavIndexProvider = StateProvider<int>((ref) => 0);
@@ -28,6 +29,7 @@ class MainNavigationScreen extends ConsumerWidget {
       const TodaysTasksScreen(),     // Tasks Tab
       if (showDailyLogs) isQC ? const QCDailyLogScreen() : const DailyWorkLogScreen(),    // Daily Log Tab
       if (showDailyLogs) isQC ? const QCHistoryScreen() : const WorkHistoryScreen(),     // History Tab
+      const RatePeersScreen(),       // Rate Peers Tab
       const ProfileScreen(),         // Profile Tab
     ];
 
@@ -54,6 +56,11 @@ class MainNavigationScreen extends ConsumerWidget {
           activeIcon: Icon(Icons.history),
           label: 'History',
         ),
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.star_outline),
+        activeIcon: Icon(Icons.star),
+        label: 'Rate',
+      ),
       const BottomNavigationBarItem(
         icon: Icon(Icons.person_outline),
         activeIcon: Icon(Icons.person),

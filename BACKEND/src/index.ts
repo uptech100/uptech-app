@@ -10,6 +10,7 @@ import qcRoutes from './routes/qc.routes';
 import adminRoutes from './routes/admin.routes';
 import worklogRoutes from './routes/worklog.routes';
 import checklistRoutes from './routes/checklist.routes';
+import ratingRoutes from './routes/rating.routes';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,6 +33,7 @@ app.use('/api/qc', qcRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/worklog', worklogRoutes);
 app.use('/api/checklists', checklistRoutes);
+app.use('/api/ratings', ratingRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
