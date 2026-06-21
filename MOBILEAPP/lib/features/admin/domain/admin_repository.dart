@@ -29,4 +29,7 @@ abstract class AdminRepository {
   Future<Map<String, dynamic>> createProduct(Map<String, dynamic> data);
   Future<Map<String, dynamic>> updateProduct(int id, Map<String, dynamic> data);
   Future<void> deleteProduct(int id);
+
+  // MIS Reports
+  Future<List<dynamic>> getMisReports(String startDate, String endDate);
 }

@@ -3,13 +3,13 @@ import '../../../core/network/dio_client.dart';
 import '../domain/user_rating.dart';
 
 class RatingRepository {
-  final DioClient _dioClient;
+  final Dio _dio;
 
-  RatingRepository(this._dioClient);
+  RatingRepository(this._dio);
 
   Future<List<RateableUser>> getUsersToRate() async {
     try {
-      final response = await _dioClient.dio.get('/ratings/users');
+      final response = await _dio.get('/ratings/users');
       return (response.data as List)
           .map((json) => RateableUser.fromJson(json))
           .toList();
@@ -20,8 +20,7 @@ class RatingRepository {
 
   Future<void> submitRating(int rateeId, double rating) async {
     try {
-      // Sending bypassSaturday=true for testing purposes. In production, remove this query param.
-      await _dioClient.dio.post('/ratings?bypassSaturday=true', data: {
+      await _dio.post('/ratings?bypassSaturday=true', data: {
         'rateeId': rateeId,
         'rating': rating,
       });
@@ -32,7 +31,7 @@ class RatingRepository {
 
   Future<List<AdminRatingSummary>> getAdminRatingsSummary() async {
     try {
-      final response = await _dioClient.dio.get('/ratings/admin-summary');
+      final response = await _dio.get('/ratings/admin-summary');
       return (response.data as List)
           .map((json) => AdminRatingSummary.fromJson(json))
           .toList();

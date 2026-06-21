@@ -203,6 +203,15 @@ class AdminRepositoryImpl implements AdminRepository {
       throw Exception(_handleError(e));
     }
   }
+
+  @override
+  Future<List<dynamic>> getMisReports(String startDate, String endDate) async {
+    try {
+      return await _remoteDataSource.getMisReports(startDate, endDate);
+    } catch (e) {
+      throw Exception(_handleError(e));
+    }
+  }
 }
 
 final adminRepositoryProvider = Provider<AdminRepository>((ref) {

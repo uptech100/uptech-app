@@ -7,6 +7,7 @@ import {
   getUsers, createUser, updateUser, deleteUser, resetUserPassword,
   getProcesses, createProcess, updateProcess, deleteProcess,
   getProducts, createProduct, updateProduct, deleteProduct,
+  getMisReports,
 } from '../controllers/admin.controller';
 
 const router = Router();
@@ -57,5 +58,8 @@ router.get('/products', getProducts);
 router.post('/products', createProduct);
 router.put('/products/:id', updateProduct);
 router.delete('/products/:id', deleteProduct);
+
+// MIS Reports route
+router.get('/mis-reports', getMisReports);
 
 export default router;

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/network/dio_client.dart';
-import '../data/rating_repository.dart';
-import '../domain/user_rating.dart';
+import '../../../../core/network/dio_client.dart';
+import '../../data/rating_repository.dart';
+import '../../domain/user_rating.dart';
 
 final ratingRepositoryProvider = Provider<RatingRepository>((ref) {
   final dioClient = ref.watch(dioClientProvider);

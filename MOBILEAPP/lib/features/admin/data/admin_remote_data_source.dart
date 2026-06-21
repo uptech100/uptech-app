@@ -27,6 +27,8 @@ abstract class AdminRemoteDataSource {
   Future<Map<String, dynamic>> createProduct(Map<String, dynamic> data);
   Future<Map<String, dynamic>> updateProduct(int id, Map<String, dynamic> data);
   Future<void> deleteProduct(int id);
+
+  Future<List<dynamic>> getMisReports(String startDate, String endDate);
 }
 
 class AdminRemoteDataSourceImpl implements AdminRemoteDataSource {
@@ -150,6 +152,15 @@ class AdminRemoteDataSourceImpl implements AdminRemoteDataSource {
   @override
   Future<void> deleteProduct(int id) async {
     await _dio.delete('/admin/products/$id');
+  }
+
+  @override
+  Future<List<dynamic>> getMisReports(String startDate, String endDate) async {
+    final response = await _dio.get('/admin/mis-reports', queryParameters: {
+      'startDate': startDate,
+      'endDate': endDate,
+    });
+    return response.data as List<dynamic>;
   }
 }
 

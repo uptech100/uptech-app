@@ -31,6 +31,12 @@ final productsProvider = FutureProvider<List<dynamic>>((ref) async {
   return await repo.getProducts();
 });
 
+// MIS Reports Provider
+final misReportsProvider = FutureProvider.family<List<dynamic>, Map<String, String>>((ref, dates) async {
+  final repo = ref.watch(adminRepositoryProvider);
+  return await repo.getMisReports(dates['startDate']!, dates['endDate']!);
+});
+
 // Dashboard Stats Provider (Computed from departments and users)
 final adminDashboardStatsProvider = Provider<AsyncValue<Map<String, dynamic>>>((ref) {
   final usersState = ref.watch(usersProvider);

@@ -4,7 +4,8 @@ import '../screens/department_management_screen.dart';
 import '../screens/user_management_screen.dart';
 import '../screens/process_management_screen.dart';
 import '../screens/product_management_screen.dart';
-import '../../ratings/presentation/screens/admin_ratings_screen.dart';
+import '../../../ratings/presentation/screens/admin_ratings_screen.dart';
+import '../screens/mis_reports_screen.dart';
 import '../../../../core/theme/app_theme.dart';
 
 class AdminNavigationScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class _AdminNavigationScreenState extends State<AdminNavigationScreen> {
     const ProcessManagementScreen(),
     const ProductManagementScreen(),
     const AdminRatingsScreen(),
+    const MisReportsScreen(),
   ];
 
   final List<String> _titles = [
@@ -33,6 +35,7 @@ class _AdminNavigationScreenState extends State<AdminNavigationScreen> {
     'Processes',
     'Products',
     'Peer Ratings',
+    'MIS Reports',
   ];
 
   @override
@@ -88,6 +91,11 @@ class _AdminNavigationScreenState extends State<AdminNavigationScreen> {
               icon: Icon(Icons.star_half_outlined),
               activeIcon: Icon(Icons.star),
               label: 'Ratings',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.analytics_outlined),
+              activeIcon: Icon(Icons.analytics),
+              label: 'MIS',
             ),
           ],
         ),

@@ -442,3 +442,163 @@ export const deleteProduct = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+// --- MIS Reports Route ---
+export const getMisReports = async (req: Request, res: Response) => {
+  try {
+    const { startDate, endDate } = req.query;
+    
+    if (!startDate || !endDate) {
+      return res.status(400).json({ message: 'startDate and endDate are required' });
+    }
+
+    const start = new Date(startDate as string);
+    const end = new Date(endDate as string);
+
+    // End date should include the full day
+    end.setUTCHours(23, 59, 59, 999);
+
+    const users = await prisma.user.findMany({
+      where: { status: 'Active' },
+      select: {
+        id: true,
+        name: true,
+        employeeId: true,
+        department: { select: { name: true } },
+        role: { select: { name: true } }
+      }
+    });
+
+    const userIds = users.map(u => u.id);
+
+    // Fetch Tasks
+    const tasks = await prisma.task.findMany({
+      where: {
+        assignedToId: { in: userIds },
+        createdAt: {
+          gte: start,
+          lte: end
+        }
+      },
+      select: {
+        assignedToId: true,
+        status: true
+      }
+    });
+
+    // Calculate Task stats per user
+    const taskStats = new Map();
+    for (const t of tasks) {
+      if (!taskStats.has(t.assignedToId)) {
+        taskStats.set(t.assignedToId, { total: 0, completed: 0 });
+      }
+      const stats = taskStats.get(t.assignedToId);
+      stats.total += 1;
+      if (t.status === 'Completed') {
+        stats.completed += 1;
+      }
+    }
+
+    // Fetch Checklist Templates
+    const templates = await prisma.checklistTemplate.findMany({
+      where: {
+        userId: { in: userIds },
+        status: 'Active'
+      }
+    });
+
+    // Helper to calculate how many times a template is due between start and end
+    const getOccurrences = (frequency: string, freqValue: number | null, s: Date, e: Date) => {
+      let count = 0;
+      let curr = new Date(s);
+      curr.setUTCHours(0, 0, 0, 0);
+      const endLimit = new Date(e);
+      endLimit.setUTCHours(23, 59, 59, 999);
+
+      while (curr <= endLimit) {
+        if (frequency === 'Daily') {
+          count++;
+        } else if (frequency === 'Weekly') {
+          const jsDay = curr.getUTCDay();
+          const expectedDay = jsDay === 0 ? 7 : jsDay;
+          if (freqValue === expectedDay) count++;
+        } else if (frequency === 'Monthly') {
+          if (freqValue === curr.getUTCDate()) count++;
+        }
+        curr.setUTCDate(curr.getUTCDate() + 1);
+      }
+      return count;
+    };
+
+    const checklistDueStats = new Map();
+    for (const t of templates) {
+      const dueCount = getOccurrences(t.frequency, t.frequencyValue, start, end);
+      if (!checklistDueStats.has(t.userId)) {
+        checklistDueStats.set(t.userId, 0);
+      }
+      checklistDueStats.set(t.userId, checklistDueStats.get(t.userId) + dueCount);
+    }
+
+    // Fetch Completed Checklist Logs
+    const checklistLogs = await prisma.checklistLog.findMany({
+      where: {
+        userId: { in: userIds },
+        status: 'Completed',
+        date: {
+          gte: start,
+          lte: end
+        }
+      },
+      select: {
+        userId: true
+      }
+    });
+
+    const checklistCompletedStats = new Map();
+    for (const log of checklistLogs) {
+      if (!checklistCompletedStats.has(log.userId)) {
+        checklistCompletedStats.set(log.userId, 0);
+      }
+      checklistCompletedStats.set(log.userId, checklistCompletedStats.get(log.userId) + 1);
+    }
+
+    // Combine Data
+    const reportData = users.map(u => {
+      const tStats = taskStats.get(u.id) || { total: 0, completed: 0 };
+      const pendingTasks = tStats.total - tStats.completed;
+      const taskScore = (tStats.completed - tStats.total) * 10;
+
+      const cTotal = checklistDueStats.get(u.id) || 0;
+      const cCompleted = checklistCompletedStats.get(u.id) || 0;
+      const pendingChecklists = cTotal - cCompleted;
+      const cPending = pendingChecklists > 0 ? pendingChecklists : 0; 
+      const checklistScore = (cCompleted - cTotal) * 10;
+
+      return {
+        userId: u.id,
+        employeeId: u.employeeId,
+        name: u.name,
+        department: u.department?.name || 'N/A',
+        role: u.role?.name || 'N/A',
+        tasks: {
+          total: tStats.total,
+          completed: tStats.completed,
+          pending: pendingTasks > 0 ? pendingTasks : 0,
+          score: tStats.total === 0 ? 0 : (taskScore > 0 ? 0 : taskScore),
+        },
+        checklists: {
+          total: cTotal,
+          completed: cCompleted,
+          pending: cPending,
+          score: cTotal === 0 ? 0 : (checklistScore > 0 ? 0 : checklistScore),
+        }
+      };
+    });
+
+    res.json(reportData);
+
+  } catch (error) {
+    console.error('Error fetching MIS reports:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

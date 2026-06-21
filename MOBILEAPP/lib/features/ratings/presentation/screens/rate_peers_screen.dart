@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/rating_providers.dart';
-import '../domain/user_rating.dart';
+import '../../domain/user_rating.dart';
 
 class RatePeersScreen extends ConsumerWidget {
   const RatePeersScreen({super.key});
