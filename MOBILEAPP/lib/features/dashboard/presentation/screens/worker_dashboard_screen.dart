@@ -268,8 +268,7 @@ class WorkerDashboardScreen extends ConsumerWidget {
             ),
           ),
         ],
-      ),
-    );
+      );
   }
 
   Widget _buildDashboardCard(BuildContext context, {required IconData icon, required String label, VoidCallback? onTap}) {
