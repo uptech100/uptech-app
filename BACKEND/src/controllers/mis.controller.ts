@@ -14,6 +14,8 @@ export const getWorkerMis = async (req: Request, res: Response) => {
     const start = new Date(startDate as string);
     const end = new Date(endDate as string);
     end.setUTCHours(23, 59, 59, 999);
+    
+    const parsedUserId = parseInt(userId as string, 10);
 
     // Calculate Expected Hours (8 hours per day, excluding Sundays usually, but let's just do 8 * days)
     const getDaysBetween = (d1: Date, d2: Date) => {
@@ -38,7 +40,7 @@ export const getWorkerMis = async (req: Request, res: Response) => {
     // 1. Task Score
     const tasks = await prisma.task.findMany({
       where: {
-        assignedToId: userId,
+        assignedToId: parsedUserId,
         createdAt: { gte: start, lte: end }
       }
     });
@@ -50,7 +52,7 @@ export const getWorkerMis = async (req: Request, res: Response) => {
     // 2. Work Logs (Time & Quantity & Process Breakdown)
     const logs = await prisma.dailyWorkLog.findMany({
       where: {
-        userId: userId,
+        userId: parsedUserId,
         date: { gte: start, lte: end }
       },
       include: {
@@ -104,7 +106,17 @@ export const getWorkerMis = async (req: Request, res: Response) => {
       processBreakdown: Object.keys(processBreakdown).map(k => ({
         process: k,
         hours: processBreakdown[k]
-      }))
+      })),
+      workHistory: logs.map(log => ({
+        date: log.date,
+        totalHours: log.totalHours,
+        entries: log.entries.map(e => ({
+          processName: e.process?.name || 'Unknown',
+          quantity: e.quantity || '0',
+          startTime: e.startTime,
+          endTime: e.endTime,
+        }))
+      })).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     });
 
   } catch (error) {

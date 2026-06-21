@@ -289,6 +289,63 @@ class _WorkerMisScreenState extends ConsumerState<WorkerMisScreen> {
               ),
             );
           }),
+          const SizedBox(height: 24),
+
+          // Work History List
+          if (data['workHistory'] != null && (data['workHistory'] as List).isNotEmpty) ...[
+            const Text(
+              'Detailed Work History',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+            ),
+            const SizedBox(height: 12),
+            ...(data['workHistory'] as List).map((dayLog) {
+              final dateStr = DateFormat('EEE, MMM dd').format(DateTime.parse(dayLog['date']));
+              return Card(
+                color: AppTheme.primaryWhite,
+                margin: const EdgeInsets.only(bottom: 12),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(dateStr, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.primaryColor)),
+                          Text('${dayLog['totalHours']} hrs', style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textSecondary)),
+                        ],
+                      ),
+                      const Divider(color: Colors.white10),
+                      ...(dayLog['entries'] as List).map((entry) {
+                        final startT = DateFormat('hh:mm a').format(DateTime.parse(entry['startTime']));
+                        final endT = DateFormat('hh:mm a').format(DateTime.parse(entry['endTime']));
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.arrow_right, color: Colors.grey, size: 20),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(entry['processName'], style: const TextStyle(color: AppTheme.textPrimary)),
+                                    Text('$startT - $endT', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                                  ],
+                                ),
+                              ),
+                              Text('${entry['quantity']} pairs', style: const TextStyle(color: AppTheme.success, fontSize: 13, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ]
         ],
       ),
     );
