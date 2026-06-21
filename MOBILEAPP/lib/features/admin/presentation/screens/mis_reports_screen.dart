@@ -56,7 +56,7 @@ class _MisReportsScreenState extends ConsumerState<MisReportsScreen> {
             colorScheme: const ColorScheme.dark(
               primary: AppTheme.primaryColor,
               onPrimary: Colors.white,
-              surface: AppTheme.surfaceColor,
+              surface: AppTheme.primaryWhite,
               onSurface: AppTheme.textPrimary,
             ),
           ),
@@ -84,7 +84,7 @@ class _MisReportsScreenState extends ConsumerState<MisReportsScreen> {
     final misDataAsync = ref.watch(misReportsProvider(dates));
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.bgLight,
       body: Column(
         children: [
           _buildFilterHeader(),
@@ -108,7 +108,7 @@ class _MisReportsScreenState extends ConsumerState<MisReportsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: AppTheme.primaryWhite,
         border: Border(bottom: BorderSide(color: Colors.white10)),
       ),
       child: Column(
@@ -127,7 +127,7 @@ class _MisReportsScreenState extends ConsumerState<MisReportsScreen> {
               ),
               DropdownButton<String>(
                 value: _selectedFilter,
-                dropdownColor: AppTheme.surfaceColor,
+                dropdownColor: AppTheme.primaryWhite,
                 style: const TextStyle(color: AppTheme.textPrimary, fontSize: 16),
                 underline: Container(height: 2, color: AppTheme.primaryColor),
                 icon: const Icon(Icons.arrow_drop_down, color: AppTheme.primaryColor),
@@ -184,7 +184,7 @@ class _MisReportsScreenState extends ConsumerState<MisReportsScreen> {
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: AppTheme.surfaceColor,
+      color: AppTheme.primaryWhite,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
