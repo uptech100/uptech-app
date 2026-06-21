@@ -562,6 +562,55 @@ export const getMisReports = async (req: Request, res: Response) => {
       checklistCompletedStats.set(log.userId, checklistCompletedStats.get(log.userId) + 1);
     }
 
+    // Fetch Daily Work Logs for Time and Quantity
+    const dailyLogs = await prisma.dailyWorkLog.findMany({
+      where: {
+        userId: { in: userIds },
+        date: { gte: start, lte: end }
+      },
+      include: { entries: true }
+    });
+
+    const timeStats = new Map();
+    const quantityStats = new Map();
+    
+    for (const log of dailyLogs) {
+      if (!timeStats.has(log.userId)) timeStats.set(log.userId, 0);
+      timeStats.set(log.userId, timeStats.get(log.userId) + (log.totalHours || 0));
+
+      let totalQty = 0;
+      for (const entry of log.entries) {
+        if (entry.quantity) {
+          // Attempt to parse number from string like "10 pairs"
+          const parsed = parseFloat(entry.quantity.replace(/[^0-9.]/g, ''));
+          if (!isNaN(parsed)) {
+            totalQty += parsed;
+          }
+        }
+      }
+      if (!quantityStats.has(log.userId)) quantityStats.set(log.userId, 0);
+      quantityStats.set(log.userId, quantityStats.get(log.userId) + totalQty);
+    }
+
+    // Fetch QC Logs for Quality
+    const qcLogs = await prisma.qCDailyLog.findMany({
+      where: {
+        userId: { in: userIds },
+        date: { gte: start, lte: end }
+      },
+      include: { entries: true }
+    });
+
+    const qualityStats = new Map();
+    for (const log of qcLogs) {
+      let totalQc = 0;
+      for (const entry of log.entries) {
+        totalQc += (entry.quantity || 0);
+      }
+      if (!qualityStats.has(log.userId)) qualityStats.set(log.userId, 0);
+      qualityStats.set(log.userId, qualityStats.get(log.userId) + totalQc);
+    }
+
     // Combine Data
     const reportData = users.map(u => {
       const tStats = taskStats.get(u.id) || { total: 0, completed: 0 };
@@ -573,6 +622,11 @@ export const getMisReports = async (req: Request, res: Response) => {
       const pendingChecklists = cTotal - cCompleted;
       const cPending = pendingChecklists > 0 ? pendingChecklists : 0; 
       const checklistScore = (cCompleted - cTotal) * 10;
+
+      const timeLogged = timeStats.get(u.id) || 0;
+      const quantityLogged = quantityStats.get(u.id) || 0;
+      const qualityLogged = qualityStats.get(u.id) || 0;
+      const costLogged = timeLogged * 100; // Using dummy rate of 100/hr
 
       return {
         userId: u.id,
@@ -591,6 +645,12 @@ export const getMisReports = async (req: Request, res: Response) => {
           completed: cCompleted,
           pending: cPending,
           score: cTotal === 0 ? 0 : (checklistScore > 0 ? 0 : checklistScore),
+        },
+        metrics: {
+          time: timeLogged,
+          quantity: quantityLogged,
+          quality: qualityLogged,
+          cost: costLogged,
         }
       };
     });
