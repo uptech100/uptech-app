@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../providers/worker_mis_provider.dart';
+import '../providers/admin_providers.dart';
 
 class WorkerMisScreen extends ConsumerStatefulWidget {
   final bool isEmbedded;
@@ -17,6 +18,7 @@ class _WorkerMisScreenState extends ConsumerState<WorkerMisScreen> {
   String _selectedFilter = 'Weekly';
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
   DateTime _endDate = DateTime.now();
+  String? _selectedUserId;
 
   final List<String> _filters = ['Daily', 'Weekly', 'Quarterly', '6 Months', '1 Year'];
 
@@ -48,19 +50,30 @@ class _WorkerMisScreenState extends ConsumerState<WorkerMisScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dateRange = '${_startDate.toIso8601String()}|${_endDate.toIso8601String()}';
-    final misDataAsync = ref.watch(workerMisProvider(dateRange));
+    final usersAsync = ref.watch(usersProvider);
+    final users = usersAsync.value ?? [];
+    final workerUsers = users.where((u) => u['role']['name'] == 'Worker').toList();
+
+    if (workerUsers.isNotEmpty && _selectedUserId == null) {
+      // Don't set state during build, just use the first one if null
+      // Actually we will leave it null to show "Select Worker" by default
+    }
+
+    final dateRange = '${_startDate.toIso8601String()}|${_endDate.toIso8601String()}|${_selectedUserId ?? ''}';
+    final misDataAsync = _selectedUserId == null ? null : ref.watch(workerMisProvider(dateRange));
 
     final content = Column(
       children: [
-        _buildFilterHeader(),
+        _buildFilterHeader(workerUsers),
         Expanded(
-          child: misDataAsync.when(
+          child: misDataAsync == null 
+            ? const Center(child: Text('Please select a worker to view their MIS.', style: TextStyle(color: AppTheme.textSecondary)))
+            : misDataAsync.when(
             loading: () => const Center(child: CircularProgressIndicator(color: AppTheme.primaryColor)),
             error: (err, stack) => Center(
               child: Text('Error: ${err.toString()}', style: const TextStyle(color: AppTheme.danger)),
             ),
-            data: (data) => _buildDashboard(data),
+            data: (data) => data == null ? const SizedBox() : _buildDashboard(data),
           ),
         ),
       ],
@@ -73,14 +86,14 @@ class _WorkerMisScreenState extends ConsumerState<WorkerMisScreen> {
     return Scaffold(
       backgroundColor: AppTheme.bgLight,
       appBar: AppBar(
-        title: const Text('My MIS Dashboard'),
+        title: const Text('Worker MIS Dashboard'),
         backgroundColor: AppTheme.primaryColor,
       ),
       body: content,
     );
   }
 
-  Widget _buildFilterHeader() {
+  Widget _buildFilterHeader(List<dynamic> workerUsers) {
     final dateFormat = DateFormat('MMM dd, yyyy');
 
     return Container(
@@ -95,14 +108,31 @@ class _WorkerMisScreenState extends ConsumerState<WorkerMisScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Performance Metrics',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.textPrimary,
+              Expanded(
+                child: DropdownButton<String>(
+                  value: _selectedUserId,
+                  hint: const Text('Select Worker', style: TextStyle(color: AppTheme.textSecondary)),
+                  dropdownColor: AppTheme.primaryWhite,
+                  isExpanded: true,
+                  style: const TextStyle(color: AppTheme.textPrimary, fontSize: 18, fontWeight: FontWeight.bold),
+                  underline: Container(height: 2, color: AppTheme.primaryColor),
+                  icon: const Icon(Icons.person, color: AppTheme.primaryColor),
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      setState(() {
+                        _selectedUserId = newValue;
+                      });
+                    }
+                  },
+                  items: workerUsers.map<DropdownMenuItem<String>>((user) {
+                    return DropdownMenuItem<String>(
+                      value: user['id'],
+                      child: Text(user['name'] ?? 'Unknown'),
+                    );
+                  }).toList(),
                 ),
               ),
+              const SizedBox(width: 16),
               DropdownButton<String>(
                 value: _selectedFilter,
                 dropdownColor: AppTheme.primaryWhite,

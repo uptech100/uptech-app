@@ -5,11 +5,10 @@ const prisma = new PrismaClient();
 
 export const getWorkerMis = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.userId;
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, userId } = req.query;
 
-    if (!startDate || !endDate) {
-      return res.status(400).json({ message: 'startDate and endDate are required' });
+    if (!startDate || !endDate || !userId) {
+      return res.status(400).json({ message: 'startDate, endDate, and userId are required' });
     }
 
     const start = new Date(startDate as string);
