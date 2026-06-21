@@ -8,7 +8,6 @@ import '../../../worklog/presentation/screens/daily_work_log_screen.dart';
 import '../../../qc/presentation/screens/qc_daily_log_screen.dart';
 import '../../../qc/presentation/screens/qc_history_screen.dart';
 import '../../../ratings/presentation/screens/rate_peers_screen.dart';
-import 'worker_mis_screen.dart';
 import '../../../../core/theme/app_theme.dart';
 
 final bottomNavIndexProvider = StateProvider<int>((ref) => 0);
@@ -31,7 +30,6 @@ class MainNavigationScreen extends ConsumerWidget {
       if (showDailyLogs) isQC ? const QCDailyLogScreen() : const DailyWorkLogScreen(),    // Daily Log Tab
       if (showDailyLogs) isQC ? const QCHistoryScreen() : const WorkHistoryScreen(),     // History Tab
       const RatePeersScreen(),       // Rate Peers Tab
-      const WorkerMisScreen(),       // MIS Tab
       const ProfileScreen(),         // Profile Tab
     ];
 
@@ -62,11 +60,6 @@ class MainNavigationScreen extends ConsumerWidget {
         icon: Icon(Icons.star_outline),
         activeIcon: Icon(Icons.star),
         label: 'Rate',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.analytics_outlined),
-        activeIcon: Icon(Icons.analytics),
-        label: 'My MIS',
       ),
       const BottomNavigationBarItem(
         icon: Icon(Icons.person_outline),
