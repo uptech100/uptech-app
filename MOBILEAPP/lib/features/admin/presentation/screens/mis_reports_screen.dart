@@ -176,12 +176,6 @@ class _MisReportsScreenState extends ConsumerState<MisReportsScreen> {
   Widget _buildUserCard(Map<String, dynamic> user) {
     final tasks = user['tasks'];
     final checklists = user['checklists'];
-    final metrics = user['metrics'] ?? {
-      'time': 0,
-      'quantity': 0,
-      'quality': 0,
-      'cost': 0,
-    };
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
@@ -233,46 +227,9 @@ class _MisReportsScreenState extends ConsumerState<MisReportsScreen> {
                 Expanded(child: _buildStatSection('Checklists', checklists)),
               ],
             ),
-            const Divider(color: Colors.white10, height: 32),
-            Row(
-              children: [
-                Expanded(child: _buildMetricItem(Icons.timer_outlined, 'Time Logged', '${metrics['time']} Hrs', Colors.blue)),
-                Expanded(child: _buildMetricItem(Icons.inventory_2_outlined, 'Quantity', '${metrics['quantity']} Pairs', Colors.orange)),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(child: _buildMetricItem(Icons.verified_outlined, 'Quality Passed', '${metrics['quality']}', Colors.green)),
-                Expanded(child: _buildMetricItem(Icons.currency_rupee_outlined, 'Cost', '₹${metrics['cost']}', Colors.purple)),
-              ],
-            ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildMetricItem(IconData icon, String label, String value, Color color) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: color, size: 20),
-        ),
-        const SizedBox(width: 12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
-            Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
-          ],
-        ),
-      ],
     );
   }
 
