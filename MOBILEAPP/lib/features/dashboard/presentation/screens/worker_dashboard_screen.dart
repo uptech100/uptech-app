@@ -8,6 +8,7 @@ import '../../../tasks/presentation/screens/assigned_tasks_list_screen.dart';
 import '../../../checklists/presentation/screens/worker_checklist_screen.dart';
 import '../../../qc/presentation/screens/qc_daily_log_screen.dart';
 import 'main_navigation_screen.dart';
+import 'worker_mis_screen.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,23 +37,45 @@ class WorkerDashboardScreen extends ConsumerWidget {
     final isChecklistEligible = dept.contains('ACCOUNT') || dept.contains('HR') || dept.contains('PC') || dept.contains('PROCESS');
     final isProduction = dept.contains('PRODUCTION') || dept.contains('PROD');
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Dashboard is up to date!'), duration: Duration(seconds: 1)),
-              );
-            },
-            tooltip: 'Refresh Dashboard',
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Dashboard'),
+          bottom: const TabBar(
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white54,
+            indicatorColor: Colors.white,
+            tabs: [
+              Tab(text: 'Overview', icon: Icon(Icons.dashboard)),
+              Tab(text: 'My MIS', icon: Icon(Icons.analytics)),
+            ],
           ),
-        ],
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Dashboard is up to date!'), duration: Duration(seconds: 1)),
+                );
+              },
+              tooltip: 'Refresh Dashboard',
+            ),
+          ],
+        ),
+        body: TabBarView(
+          children: [
+            _buildOverviewTab(context, ref, isProduction, isQC, isChecklistEligible),
+            const WorkerMisScreen(isEmbedded: true),
+          ],
+        ),
       ),
-      body: Column(
-        children: [
+    );
+  }
+
+  Widget _buildOverviewTab(BuildContext context, WidgetRef ref, bool isProduction, bool isQC, bool isChecklistEligible) {
+    return Column(
+      children: [
           // Professional Hero Button for Production & Quality
           if (isProduction || isQC)
             Padding(

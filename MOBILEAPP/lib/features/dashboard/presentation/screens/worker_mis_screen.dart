@@ -5,7 +5,9 @@ import '../../../../core/theme/app_theme.dart';
 import '../providers/worker_mis_provider.dart';
 
 class WorkerMisScreen extends ConsumerStatefulWidget {
-  const WorkerMisScreen({super.key});
+  final bool isEmbedded;
+  
+  const WorkerMisScreen({super.key, this.isEmbedded = false});
 
   @override
   ConsumerState<WorkerMisScreen> createState() => _WorkerMisScreenState();
@@ -49,26 +51,32 @@ class _WorkerMisScreenState extends ConsumerState<WorkerMisScreen> {
     final dateRange = '${_startDate.toIso8601String()}|${_endDate.toIso8601String()}';
     final misDataAsync = ref.watch(workerMisProvider(dateRange));
 
+    final content = Column(
+      children: [
+        _buildFilterHeader(),
+        Expanded(
+          child: misDataAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator(color: AppTheme.primaryColor)),
+            error: (err, stack) => Center(
+              child: Text('Error: ${err.toString()}', style: const TextStyle(color: AppTheme.danger)),
+            ),
+            data: (data) => _buildDashboard(data),
+          ),
+        ),
+      ],
+    );
+
+    if (widget.isEmbedded) {
+      return content;
+    }
+
     return Scaffold(
       backgroundColor: AppTheme.bgLight,
       appBar: AppBar(
         title: const Text('My MIS Dashboard'),
         backgroundColor: AppTheme.primaryColor,
       ),
-      body: Column(
-        children: [
-          _buildFilterHeader(),
-          Expanded(
-            child: misDataAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator(color: AppTheme.primaryColor)),
-              error: (err, stack) => Center(
-                child: Text('Error: ${err.toString()}', style: const TextStyle(color: AppTheme.danger)),
-              ),
-              data: (data) => _buildDashboard(data),
-            ),
-          ),
-        ],
-      ),
+      body: content,
     );
   }
 
