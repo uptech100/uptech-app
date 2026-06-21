@@ -126,7 +126,7 @@ class _WorkerMisScreenState extends ConsumerState<WorkerMisScreen> {
                   },
                   items: workerUsers.map<DropdownMenuItem<String>>((user) {
                     return DropdownMenuItem<String>(
-                      value: user['id'],
+                      value: user['id'].toString(),
                       child: Text(user['name'] ?? 'Unknown'),
                     );
                   }).toList(),
