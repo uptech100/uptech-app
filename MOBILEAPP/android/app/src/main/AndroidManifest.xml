@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="erp_app"
+        android:label="UPTECH"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
