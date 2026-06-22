@@ -17,7 +17,22 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
   String _selectedProcess = 'Finish Checking';
   final List<String> _processes = ['Finish Checking', 'In-Process Checking', 'Final Inspection'];
   
-  final TextEditingController _categoryController = TextEditingController();
+  String? _selectedCategory;
+  final List<String> _categoriesList = [
+    'MAGNETIC V BLOCK',
+    'NON MAGNETIC V BLOCK',
+    'Magnetic Lifters',
+    'SHEET METAL LIFTER',
+    'Chucks',
+    'Roller Bearing V Block',
+    'Parallel Blocks',
+    'SINE TABLE',
+    'MAGNETIC RECTANGULAR BLOCKS',
+    'GRINDING VICE',
+    'MAGNETIC HOLDER',
+    'OTHERS'
+  ];
+  
   final TextEditingController _itemCodeController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _uomController = TextEditingController(text: 'NOS');
@@ -36,6 +51,13 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
       );
       return;
     }
+    
+    if (_selectedCategory == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a Category')),
+      );
+      return;
+    }
 
     final int? quantity = int.tryParse(_quantityController.text);
     if (quantity == null || quantity <= 0) {
@@ -48,7 +70,7 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
     setState(() {
       _entries.add({
         'process': _selectedProcess,
-        'category': _categoryController.text.trim(),
+        'category': _selectedCategory,
         'itemCode': _itemCodeController.text.trim().toUpperCase(),
         'description': _descriptionController.text.trim(),
         'uom': _uomController.text.trim().toUpperCase(),
@@ -243,7 +265,6 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
 
   @override
   void dispose() {
-    _categoryController.dispose();
     _itemCodeController.dispose();
     _descriptionController.dispose();
     _uomController.dispose();
@@ -362,15 +383,25 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
                       ),
                       const SizedBox(height: 16),
                       
-                      // Category
-                      TextFormField(
-                        controller: _categoryController,
+                      // Category Dropdown
+                      DropdownButtonFormField<String>(
+                        dropdownColor: Colors.white,
+                        value: _selectedCategory,
                         decoration: const InputDecoration(
                           labelText: 'Particulars (Category)',
                           labelStyle: TextStyle(color: Colors.black54),
                           border: OutlineInputBorder(),
                         ),
                         style: const TextStyle(color: Colors.black),
+                        items: _categoriesList.map((cat) => DropdownMenuItem(
+                          value: cat,
+                          child: Text(cat, overflow: TextOverflow.ellipsis),
+                        )).toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            _selectedCategory = val;
+                          });
+                        },
                       ),
                       const SizedBox(height: 16),
                       
