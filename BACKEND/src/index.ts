@@ -12,6 +12,7 @@ import worklogRoutes from './routes/worklog.routes';
 import checklistRoutes from './routes/checklist.routes';
 import ratingRoutes from './routes/rating.routes';
 import misRoutes from './routes/mis.routes';
+import aopRoutes from './routes/aop.routes';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -36,6 +37,7 @@ app.use('/api/worklog', worklogRoutes);
 app.use('/api/checklists', checklistRoutes);
 app.use('/api/ratings', ratingRoutes);
 app.use('/api/mis', misRoutes);
+app.use('/api/aop', aopRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

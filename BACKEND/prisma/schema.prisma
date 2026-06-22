@@ -17,45 +17,45 @@ model Role {
 }
 
 model Department {
-  id             Int      @id @default(autoincrement())
-  name           String   @unique
+  id             Int                 @id @default(autoincrement())
+  name           String              @unique
   departmentCode String?
   description    String?
-  status         String   @default("Active")
+  status         String              @default("Active")
   users          User[]
   checklists     ChecklistTemplate[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
 }
 
 model User {
-  id             Int             @id @default(autoincrement())
-  employeeId     String          @unique
-  name           String
-  mobile         String          @unique
-  email          String?         @unique
-  passwordHash   String
-  roleId         Int
-  role           Role            @relation(fields: [roleId], references: [id])
-  departmentId   Int
-  department     Department      @relation(fields: [departmentId], references: [id])
-  status         String          @default("Active")
-  attendances    Attendance[]
-  leaveRequests  LeaveRequest[]
-  tasksAssigned  Task[]          @relation("AssignedTasks")
-  tasksCreated   Task[]          @relation("CreatedTasks")
-  delegations    Delegation[]
-  notifications  Notification[]
-  announcements  Announcement[]
-  payrolls       Payroll[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  dailyWorkLogs  DailyWorkLog[]
+  id                 Int                 @id @default(autoincrement())
+  employeeId         String              @unique
+  name               String
+  mobile             String              @unique
+  email              String?             @unique
+  passwordHash       String
+  roleId             Int
+  role               Role                @relation(fields: [roleId], references: [id])
+  departmentId       Int
+  department         Department          @relation(fields: [departmentId], references: [id])
+  status             String              @default("Active")
+  attendances        Attendance[]
+  leaveRequests      LeaveRequest[]
+  tasksAssigned      Task[]              @relation("AssignedTasks")
+  tasksCreated       Task[]              @relation("CreatedTasks")
+  delegations        Delegation[]
+  notifications      Notification[]
+  announcements      Announcement[]
+  payrolls           Payroll[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  dailyWorkLogs      DailyWorkLog[]
   checklistTemplates ChecklistTemplate[] @relation("ChecklistTemplates")
-  checklistLogs  ChecklistLog[]  @relation("ChecklistLogs")
-  qcDailyLogs    QCDailyLog[]    @relation("UserQCDailyLogs")
-  ratingsGiven   UserRating[]    @relation("RatingsGiven")
-  ratingsReceived UserRating[]   @relation("RatingsReceived")
+  checklistLogs      ChecklistLog[]      @relation("ChecklistLogs")
+  qcDailyLogs        QCDailyLog[]        @relation("UserQCDailyLogs")
+  ratingsGiven       UserRating[]        @relation("RatingsGiven")
+  ratingsReceived    UserRating[]        @relation("RatingsReceived")
 }
 
 model Attendance {
@@ -63,11 +63,12 @@ model Attendance {
   userId    Int
   user      User      @relation(fields: [userId], references: [id])
   date      DateTime  @db.Date
-  status    String    // Present, Absent, Half-Day
+  status    String // Present, Absent, Half-Day
   checkIn   DateTime?
   checkOut  DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
   @@unique([userId, date])
 }
 
@@ -84,23 +85,23 @@ model LeaveRequest {
 }
 
 model Task {
-  id            Int      @id @default(autoincrement())
-  title         String
-  description   String?
-  targetQty     Int?
-  machineId     String?
-  status        String   @default("Pending") // Pending, In Progress, Completed
-  priority      String   @default("Normal")
-  dueDate       DateTime?
-  startTime     DateTime?
-  endTime       DateTime?
-  assignedToId  Int
-  assignedTo    User     @relation("AssignedTasks", fields: [assignedToId], references: [id])
-  createdById   Int
-  createdBy     User     @relation("CreatedTasks", fields: [createdById], references: [id])
-  timeTaken     Float?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           Int       @id @default(autoincrement())
+  title        String
+  description  String?
+  targetQty    Int?
+  machineId    String?
+  status       String    @default("Pending") // Pending, In Progress, Completed
+  priority     String    @default("Normal")
+  dueDate      DateTime?
+  startTime    DateTime?
+  endTime      DateTime?
+  assignedToId Int
+  assignedTo   User      @relation("AssignedTasks", fields: [assignedToId], references: [id])
+  createdById  Int
+  createdBy    User      @relation("CreatedTasks", fields: [createdById], references: [id])
+  timeTaken    Float?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Delegation {
@@ -164,22 +165,22 @@ model SalesOrder {
 }
 
 model DispatchOrder {
-  id             Int      @id @default(autoincrement())
-  salesOrderId   Int
-  vehicleNumber  String?
-  status         String   @default("Scheduled")
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  salesOrderId  Int
+  vehicleNumber String?
+  status        String   @default("Scheduled")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model QualityCheck {
-  id              Int      @id @default(autoincrement())
+  id                Int      @id @default(autoincrement())
   productionEntryId Int
-  inspectorName   String
-  status          String   // Passed, Failed
-  remarks         String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  inspectorName     String
+  status            String // Passed, Failed
+  remarks           String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model Payroll {
@@ -195,10 +196,10 @@ model Payroll {
 }
 
 model ReportLog {
-  id        Int      @id @default(autoincrement())
-  reportType String
+  id          Int      @id @default(autoincrement())
+  reportType  String
   generatedBy String
-  createdAt DateTime @default(now())
+  createdAt   DateTime @default(now())
 }
 
 model AuditLog {
@@ -242,90 +243,89 @@ model DailyWorkLog {
 }
 
 model WorkEntry {
-  id          Int          @id @default(autoincrement())
-  dailyLogId  Int
-  dailyLog    DailyWorkLog @relation(fields: [dailyLogId], references: [id])
-  startTime   DateTime
-  endTime     DateTime
-  processId   Int
-  process     WorkProcess  @relation(fields: [processId], references: [id])
-  productId   Int
-  product     WorkProduct  @relation(fields: [productId], references: [id])
-  size        String?
-  sjoNumber   String?
-  quantity    String?
-  uom         String?
-  remarks     String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id         Int          @id @default(autoincrement())
+  dailyLogId Int
+  dailyLog   DailyWorkLog @relation(fields: [dailyLogId], references: [id])
+  startTime  DateTime
+  endTime    DateTime
+  processId  Int
+  process    WorkProcess  @relation(fields: [processId], references: [id])
+  productId  Int
+  product    WorkProduct  @relation(fields: [productId], references: [id])
+  size       String?
+  sjoNumber  String?
+  quantity   String?
+  uom        String?
+  remarks    String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 }
 
 model ChecklistTemplate {
-  id             Int          @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   taskName       String
   departmentId   Int
-  department     Department   @relation(fields: [departmentId], references: [id])
+  department     Department     @relation(fields: [departmentId], references: [id])
   userId         Int
-  user           User         @relation("ChecklistTemplates", fields: [userId], references: [id])
-  frequency      String       // Daily, Weekly, Monthly
-  frequencyValue Int?         // Day of week (1-7) or Day of month (1-31)
-  status         String       @default("Active")
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  user           User           @relation("ChecklistTemplates", fields: [userId], references: [id])
+  frequency      String // Daily, Weekly, Monthly
+  frequencyValue Int? // Day of week (1-7) or Day of month (1-31)
+  status         String         @default("Active")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
   logs           ChecklistLog[]
 }
 
 model ChecklistLog {
-  id           Int               @id @default(autoincrement())
-  templateId   Int
-  template     ChecklistTemplate @relation(fields: [templateId], references: [id])
-  userId       Int
-  user         User              @relation("ChecklistLogs", fields: [userId], references: [id])
-  date         DateTime          @db.Date
-  status       String            @default("Pending") // Pending, Completed
-  completedAt  DateTime?
-  remarks      String?
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  
-  
+  id          Int               @id @default(autoincrement())
+  templateId  Int
+  template    ChecklistTemplate @relation(fields: [templateId], references: [id])
+  userId      Int
+  user        User              @relation("ChecklistLogs", fields: [userId], references: [id])
+  date        DateTime          @db.Date
+  status      String            @default("Pending") // Pending, Completed
+  completedAt DateTime?
+  remarks     String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
   @@unique([templateId, date])
 }
 
 model QCItem {
-  id          Int      @id @default(autoincrement())
-  itemCode    String   @unique
-  description String
-  uom         String?
-  category    String   // mapped to 'Particulars'
-  hsnCode     String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            Int             @id @default(autoincrement())
+  itemCode      String          @unique
+  description   String
+  uom           String?
+  category      String // mapped to 'Particulars'
+  hsnCode       String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
   reportEntries QCReportEntry[]
 }
 
 model QCDailyLog {
-  id        Int      @id @default(autoincrement())
+  id        Int             @id @default(autoincrement())
   userId    Int
-  user      User     @relation("UserQCDailyLogs", fields: [userId], references: [id])
-  date      DateTime @db.Date
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  user      User            @relation("UserQCDailyLogs", fields: [userId], references: [id])
+  date      DateTime        @db.Date
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
   entries   QCReportEntry[]
 
   @@unique([userId, date])
 }
 
 model QCReportEntry {
-  id         Int        @id @default(autoincrement())
-  qcLogId    Int
-  qcLog      QCDailyLog @relation(fields: [qcLogId], references: [id])
-  qcItemId   Int
-  qcItem     QCItem     @relation(fields: [qcItemId], references: [id])
-  process    String?
-  quantity   Int
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id        Int        @id @default(autoincrement())
+  qcLogId   Int
+  qcLog     QCDailyLog @relation(fields: [qcLogId], references: [id])
+  qcItemId  Int
+  qcItem    QCItem     @relation(fields: [qcItemId], references: [id])
+  process   String?
+  quantity  Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model UserRating {
@@ -342,3 +342,23 @@ model UserRating {
   @@unique([raterId, rateeId, weekStartDate])
 }
 
+model AopTarget {
+  id        Int      @id @default(autoincrement())
+  category  String
+  month     String   // e.g., 'Apr-26'
+  target    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([category, month])
+}
+
+model AopAchieved {
+  id          Int      @id @default(autoincrement())
+  category    String
+  date        DateTime @db.Date
+  spec        String?
+  quantity    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

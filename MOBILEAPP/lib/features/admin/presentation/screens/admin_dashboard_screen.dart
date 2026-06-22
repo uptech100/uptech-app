@@ -4,16 +4,39 @@ import '../../../../core/theme/app_theme.dart';
 import '../providers/admin_providers.dart';
 import 'role_management_screen.dart';
 import 'checklist_management_screen.dart';
+import 'aop_analysis_screen.dart';
 
 class AdminDashboardScreen extends ConsumerWidget {
   const AdminDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: const TabBar(
+          labelColor: AppTheme.primaryColor,
+          unselectedLabelColor: Colors.grey,
+          indicatorColor: AppTheme.primaryColor,
+          tabs: [
+            Tab(text: 'Overview', icon: Icon(Icons.dashboard)),
+            Tab(text: 'AOP Analysis', icon: Icon(Icons.analytics)),
+          ],
+        ),
+        body: TabBarView(
+          children: [
+            _buildOverviewTab(context, ref),
+            const AopAnalysisScreen(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOverviewTab(BuildContext context, WidgetRef ref) {
     final statsAsync = ref.watch(adminDashboardStatsProvider);
 
-    return Scaffold(
-      body: statsAsync.when(
+    return statsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(
           child: Column(
@@ -94,8 +117,7 @@ class AdminDashboardScreen extends ConsumerWidget {
             ),
           );
         },
-      ),
-    );
+      );
   }
 
   Widget _buildStatCard(BuildContext context, {required String title, required String value, required IconData icon, required Color color, VoidCallback? onTap}) {
