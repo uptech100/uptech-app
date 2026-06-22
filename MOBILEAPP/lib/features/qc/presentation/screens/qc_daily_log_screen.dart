@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../providers/qc_providers.dart';
+import 'package:dio/dio.dart';
 import '../../domain/models/qc_item.dart';
 
 class QCDailyLogScreen extends ConsumerStatefulWidget {
@@ -134,8 +135,16 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
       }
     } catch (e) {
       if (mounted) {
+        String errorMessage = e.toString();
+        if (e is DioException && e.response?.data != null) {
+          errorMessage = e.response!.data['error'] ?? e.response!.data.toString();
+        }
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(
+            content: Text('Error: $errorMessage'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
+          ),
         );
       }
     } finally {
