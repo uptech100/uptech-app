@@ -137,7 +137,19 @@ class _QCHistoryScreenState extends ConsumerState<QCHistoryScreen> {
                             child: Icon(Icons.check, color: Colors.white, size: 16),
                           ),
                           title: Text('${item?.itemCode ?? 'Unknown'}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                          subtitle: Text('Qty: ${entry.quantity} ${item?.uom ?? ''}\n${item?.description ?? ''}', style: const TextStyle(fontSize: 13)),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Qty: ${entry.quantity} ${entry.uom ?? item?.uom ?? ''} | Process: ${entry.process ?? 'N/A'}', style: const TextStyle(fontSize: 13, color: Colors.black87)),
+                              if (entry.size != null && entry.size!.isNotEmpty)
+                                Text('Size: ${entry.size}', style: const TextStyle(fontSize: 13)),
+                              if (entry.sjoNumber != null && entry.sjoNumber!.isNotEmpty)
+                                Text('SJO: ${entry.sjoNumber}', style: const TextStyle(fontSize: 13)),
+                              if (entry.checkedByName != null && entry.checkedByName!.isNotEmpty)
+                                Text('Inspector: ${entry.checkedByName}', style: const TextStyle(fontSize: 13)),
+                              Text('${item?.description ?? ''}', style: const TextStyle(fontSize: 13, color: Colors.black54)),
+                            ],
+                          ),
                           isThreeLine: true,
                         );
                       }).toList(),
