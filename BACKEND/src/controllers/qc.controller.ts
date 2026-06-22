@@ -122,7 +122,7 @@ export const addQCItem = async (req: Request, res: Response) => {
 
 export const submitQCReport = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user!.id;
+    const userId = (req as any).user!.userId;
     const { date, entries } = req.body;
     
     if (!date || !entries || !Array.isArray(entries)) {
@@ -197,7 +197,7 @@ export const submitQCReport = async (req: Request, res: Response) => {
 
 export const getQCReportsHistory = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user!.id;
+    const userId = (req as any).user!.userId;
     
     const reports = await prisma.qCDailyLog.findMany({
       where: { userId },
