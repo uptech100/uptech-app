@@ -20,6 +20,7 @@ class WorkHistoryScreen extends ConsumerStatefulWidget {
 class _WorkHistoryScreenState extends ConsumerState<WorkHistoryScreen> {
   final _searchController = TextEditingController();
   String _searchQuery = '';
+  DateTime? _selectedDate;
 
   @override
   void dispose() {
@@ -163,28 +164,60 @@ class _WorkHistoryScreenState extends ConsumerState<WorkHistoryScreen> {
           // Filter / Search Bar
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Filter by Process or Product name...',
-                prefixIcon: const Icon(Icons.search, color: AppTheme.textMuted),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() => _searchQuery = '');
-                        },
-                      )
-                    : null,
-                filled: true,
-                fillColor: Colors.grey.shade100,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Filter by Process or Product name...',
+                      prefixIcon: const Icon(Icons.search, color: AppTheme.textMuted),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() => _searchQuery = '');
+                              },
+                            )
+                          : null,
+                      filled: true,
+                      fillColor: Colors.grey.shade100,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
+                  ),
                 ),
-              ),
-              onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
+                const SizedBox(width: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: _selectedDate != null ? AppTheme.primaryColor.withOpacity(0.1) : Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.calendar_month, color: _selectedDate != null ? AppTheme.primaryColor : Colors.grey),
+                    onPressed: () async {
+                      final date = await showDatePicker(
+                        context: context,
+                        initialDate: _selectedDate ?? DateTime.now(),
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime.now(),
+                      );
+                      setState(() {
+                        _selectedDate = date;
+                      });
+                    },
+                  ),
+                ),
+                if (_selectedDate != null)
+                  IconButton(
+                    icon: const Icon(Icons.clear, color: Colors.red),
+                    onPressed: () => setState(() => _selectedDate = null),
+                  ),
+              ],
             ),
           ),
 
@@ -198,8 +231,17 @@ class _WorkHistoryScreenState extends ConsumerState<WorkHistoryScreen> {
                   return const Center(child: Text('No work history found.'));
                 }
 
-                // Filter logs based on search query
+                // Filter logs based on search query and date
                 final filteredLogs = logs.where((log) {
+                  if (_selectedDate != null) {
+                    final logDate = DateTime.parse(log['date']).toLocal();
+                    if (logDate.year != _selectedDate!.year || 
+                        logDate.month != _selectedDate!.month || 
+                        logDate.day != _selectedDate!.day) {
+                      return false;
+                    }
+                  }
+                  
                   if (_searchQuery.isEmpty) return true;
                   
                   // Check if any entry matches the search query

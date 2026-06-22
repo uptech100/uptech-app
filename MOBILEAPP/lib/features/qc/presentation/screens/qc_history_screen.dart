@@ -14,6 +14,7 @@ class QCHistoryScreen extends ConsumerStatefulWidget {
 class _QCHistoryScreenState extends ConsumerState<QCHistoryScreen> {
   final _searchController = TextEditingController();
   String _searchQuery = '';
+  DateTime? _selectedDate;
 
   @override
   void dispose() {
@@ -30,28 +31,60 @@ class _QCHistoryScreenState extends ConsumerState<QCHistoryScreen> {
         // Filter / Search Bar
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Filter by Item Code or Category...',
-              prefixIcon: const Icon(Icons.search, color: AppTheme.textMuted),
-              suffixIcon: _searchQuery.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() => _searchQuery = '');
-                      },
-                    )
-                  : null,
-              filled: true,
-              fillColor: Colors.grey.shade100,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Filter by Item Code or Category...',
+                    prefixIcon: const Icon(Icons.search, color: AppTheme.textMuted),
+                    suffixIcon: _searchQuery.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() => _searchQuery = '');
+                            },
+                          )
+                        : null,
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
+                ),
               ),
-            ),
-            onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
+              const SizedBox(width: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: _selectedDate != null ? AppTheme.primaryColor.withOpacity(0.1) : Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: IconButton(
+                  icon: Icon(Icons.calendar_month, color: _selectedDate != null ? AppTheme.primaryColor : Colors.grey),
+                  onPressed: () async {
+                    final date = await showDatePicker(
+                      context: context,
+                      initialDate: _selectedDate ?? DateTime.now(),
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime.now(),
+                    );
+                    setState(() {
+                      _selectedDate = date; // Allows null to clear date filter if they dismiss, or just use a clear button
+                    });
+                  },
+                ),
+              ),
+              if (_selectedDate != null)
+                IconButton(
+                  icon: const Icon(Icons.clear, color: Colors.red),
+                  onPressed: () => setState(() => _selectedDate = null),
+                ),
+            ],
           ),
         ),
 
@@ -65,8 +98,16 @@ class _QCHistoryScreenState extends ConsumerState<QCHistoryScreen> {
                 return const Center(child: Text('No QC history found.'));
               }
 
-              // Filter logs based on search query
+              // Filter logs based on search query and date
               final filteredLogs = logs.where((log) {
+                if (_selectedDate != null) {
+                  if (log.date.year != _selectedDate!.year || 
+                      log.date.month != _selectedDate!.month || 
+                      log.date.day != _selectedDate!.day) {
+                    return false;
+                  }
+                }
+                
                 if (_searchQuery.isEmpty) return true;
                 
                 return log.entries.any((entry) {
