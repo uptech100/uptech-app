@@ -81,7 +81,7 @@ class AopAnalysisScreen extends ConsumerWidget {
         const DataCell(Text('Shortfall', style: TextStyle(color: AppTheme.danger))),
         ...months.map((m) {
           final s = shortfall[m] ?? 0;
-          return DataCell(Text('$s', style: TextStyle(color: (s as int) > 0 ? AppTheme.danger : AppTheme.success)));
+          return DataCell(Text('$s', style: TextStyle(color: (s as num) > 0 ? AppTheme.danger : AppTheme.success)));
         }),
       ]));
     }
