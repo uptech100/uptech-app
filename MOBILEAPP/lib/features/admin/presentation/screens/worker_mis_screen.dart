@@ -269,6 +269,69 @@ class _WorkerMisScreenState extends ConsumerState<WorkerMisScreen> {
           ),
           const SizedBox(height: 24),
 
+          // Specific Task Details
+          if (data['tasksList'] != null && (data['tasksList'] as List).isNotEmpty) ...[
+            const Text(
+              'Specific Task Details',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+            ),
+            const SizedBox(height: 12),
+            ...(data['tasksList'] as List).map((t) {
+              final status = t['status'] as String;
+              final reopenCount = t['reopenCount'] as int;
+              
+              Color statusColor = Colors.grey;
+              if (status == 'Completed') statusColor = AppTheme.success;
+              if (status == 'In Progress') statusColor = Colors.blue;
+              if (status == 'Pending') statusColor = Colors.orange;
+              if (status == 'Reopened') statusColor = AppTheme.danger;
+
+              return Card(
+                color: AppTheme.primaryWhite,
+                margin: const EdgeInsets.only(bottom: 8),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(t['title'] ?? 'Unknown Task', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: statusColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              status.toUpperCase(),
+                              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: statusColor),
+                            ),
+                          ),
+                          if (reopenCount > 0)
+                            Row(
+                              children: [
+                                const Icon(Icons.refresh, size: 14, color: AppTheme.danger),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Reopened $reopenCount ${reopenCount == 1 ? 'time' : 'times'}',
+                                  style: const TextStyle(fontSize: 12, color: AppTheme.danger, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+            const SizedBox(height: 24),
+          ],
+
           // Process Breakdown List
           const Text(
             'Time Spent per Process',

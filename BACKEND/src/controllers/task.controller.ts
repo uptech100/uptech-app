@@ -162,6 +162,7 @@ export const reopenTask = async (req: Request, res: Response) => {
         status: 'Reopened',
         endTime: null,
         timeTaken: null,
+        reopenCount: { increment: 1 }
       },
       include: {
         createdBy: { select: { name: true } },

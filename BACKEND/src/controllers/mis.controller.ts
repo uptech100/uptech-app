@@ -102,6 +102,12 @@ export const getWorkerMis = async (req: Request, res: Response) => {
       taskScore,
       totalTasks,
       completedTasks,
+      tasksList: tasks.map(t => ({
+        id: t.id,
+        title: t.title,
+        status: t.status,
+        reopenCount: t.reopenCount
+      })),
       totalWorkHours,
       expectedHours,
       totalQuantity,
