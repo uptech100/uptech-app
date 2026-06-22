@@ -321,11 +321,15 @@ model QCReportEntry {
   qcLogId   Int
   qcLog     QCDailyLog @relation(fields: [qcLogId], references: [id])
   qcItemId  Int
-  qcItem    QCItem     @relation(fields: [qcItemId], references: [id])
-  process   String?
-  quantity  Int
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  qcItem        QCItem     @relation(fields: [qcItemId], references: [id])
+  process       String?
+  size          String?
+  quantity      Int
+  uom           String?
+  sjoNumber     String?
+  checkedByName String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model UserRating {

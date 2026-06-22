@@ -174,6 +174,10 @@ export const submitQCReport = async (req: Request, res: Response) => {
             qcItemId: item.id,
             process: entry.process || 'Finish Checking',
             quantity: entry.quantity,
+            size: entry.size || null,
+            uom: entry.uom || item.uom || 'NOS',
+            sjoNumber: entry.sjoNumber || null,
+            checkedByName: entry.checkedByName || null,
           }
         });
       }

@@ -22,6 +22,9 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _uomController = TextEditingController(text: 'NOS');
   final TextEditingController _quantityController = TextEditingController();
+  final TextEditingController _sizeController = TextEditingController();
+  final TextEditingController _sjoNumberController = TextEditingController();
+  final TextEditingController _checkedByNameController = TextEditingController();
   
   final List<Map<String, dynamic>> _entries = [];
   bool _isSubmitting = false;
@@ -50,11 +53,16 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
         'description': _descriptionController.text.trim(),
         'uom': _uomController.text.trim().toUpperCase(),
         'quantity': quantity,
+        'size': _sizeController.text.trim(),
+        'sjoNumber': _sjoNumberController.text.trim(),
+        'checkedByName': _checkedByNameController.text.trim(),
       });
       // Reset form fields
       _itemCodeController.clear();
       _descriptionController.clear();
       _quantityController.clear();
+      _sizeController.clear();
+      _sjoNumberController.clear();
     });
   }
 
@@ -86,6 +94,9 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
         'description': e['description'],
         'uom': e['uom'],
         'quantity': e['quantity'],
+        'size': e['size'],
+        'sjoNumber': e['sjoNumber'],
+        'checkedByName': e['checkedByName'],
       }).toList();
 
       await repository.submitQCReport(_selectedDate, submitEntries);
@@ -237,6 +248,9 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
     _descriptionController.dispose();
     _uomController.dispose();
     _quantityController.dispose();
+    _sizeController.dispose();
+    _sjoNumberController.dispose();
+    _checkedByNameController.dispose();
     super.dispose();
   }
 
@@ -414,6 +428,48 @@ class _QCDailyLogScreenState extends ConsumerState<QCDailyLogScreen> {
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Size and SJO Number
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _sizeController,
+                              decoration: const InputDecoration(
+                                labelText: 'Product Size',
+                                labelStyle: TextStyle(color: Colors.black54),
+                                border: OutlineInputBorder(),
+                              ),
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _sjoNumberController,
+                              decoration: const InputDecoration(
+                                labelText: 'SJO Number',
+                                labelStyle: TextStyle(color: Colors.black54),
+                                border: OutlineInputBorder(),
+                              ),
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Checked By Name
+                      TextFormField(
+                        controller: _checkedByNameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Checked By Name',
+                          labelStyle: TextStyle(color: Colors.black54),
+                          border: OutlineInputBorder(),
+                        ),
+                        style: const TextStyle(color: Colors.black),
                       ),
                       const SizedBox(height: 20),
                       
