@@ -330,7 +330,12 @@ class _WorkerMisScreenState extends ConsumerState<WorkerMisScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(entry['processName'], style: const TextStyle(color: AppTheme.textPrimary)),
+                                    Text(entry['processName'], style: const TextStyle(color: AppTheme.textPrimary, fontWeight: FontWeight.bold)),
+                                    const SizedBox(height: 2),
+                                    Text('${entry['productName']} (Size: ${entry['size']})', style: const TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
+                                    if (entry['sjoNumber'] != null && entry['sjoNumber'] != '-')
+                                      Text('SJO: ${entry['sjoNumber']}', style: const TextStyle(color: AppTheme.primaryColor, fontSize: 12)),
+                                    const SizedBox(height: 2),
                                     Text('$startT - $endT', style: const TextStyle(color: Colors.grey, fontSize: 12)),
                                   ],
                                 ),

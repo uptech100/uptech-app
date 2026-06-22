@@ -57,7 +57,10 @@ export const getWorkerMis = async (req: Request, res: Response) => {
       },
       include: {
         entries: {
-          include: { process: true }
+          include: { 
+            process: true,
+            product: true
+          }
         }
       }
     });
@@ -112,6 +115,9 @@ export const getWorkerMis = async (req: Request, res: Response) => {
         totalHours: log.totalHours,
         entries: log.entries.map(e => ({
           processName: e.process?.name || 'Unknown',
+          productName: e.product?.name || 'Unknown',
+          size: e.size || '-',
+          sjoNumber: e.sjoNumber || '-',
           quantity: e.quantity || '0',
           startTime: e.startTime,
           endTime: e.endTime,
