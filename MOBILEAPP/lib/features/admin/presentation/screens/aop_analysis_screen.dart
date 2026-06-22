@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../providers/aop_provider.dart';
 
 class AopAnalysisScreen extends ConsumerWidget {
@@ -9,13 +10,14 @@ class AopAnalysisScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final aopDataAsync = ref.watch(aopAnalysisProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppTheme.bgLight,
       body: aopDataAsync.when(
         data: (data) {
           if (data.isEmpty) {
-            return const Center(child: Text('No AOP Data available'));
+            return Center(child: Text(l10n.noAopData));
           }
 
           // Predefine months exactly as per data
@@ -35,11 +37,11 @@ class AopAnalysisScreen extends ConsumerWidget {
                   child: DataTable(
                     headingRowColor: MaterialStateProperty.all(AppTheme.primaryColor.withValues(alpha: 0.1)),
                     columns: [
-                      const DataColumn(label: Text('Category', style: TextStyle(fontWeight: FontWeight.bold))),
-                      const DataColumn(label: Text('Type', style: TextStyle(fontWeight: FontWeight.bold))),
+                      DataColumn(label: Text(l10n.category, style: const TextStyle(fontWeight: FontWeight.bold))),
+                      DataColumn(label: Text(l10n.type, style: const TextStyle(fontWeight: FontWeight.bold))),
                       ...months.map((m) => DataColumn(label: Text(m, style: const TextStyle(fontWeight: FontWeight.bold)))),
                     ],
-                    rows: _buildRows(data, months),
+                    rows: _buildRows(data, months, l10n),
                   ),
                 ),
               ),
@@ -52,7 +54,7 @@ class AopAnalysisScreen extends ConsumerWidget {
     );
   }
 
-  List<DataRow> _buildRows(List<dynamic> data, List<String> months) {
+  List<DataRow> _buildRows(List<dynamic> data, List<String> months, AppLocalizations l10n) {
     List<DataRow> rows = [];
     
     for (var item in data) {
@@ -64,21 +66,21 @@ class AopAnalysisScreen extends ConsumerWidget {
       // Target Row
       rows.add(DataRow(cells: [
         DataCell(Text(category, style: const TextStyle(fontWeight: FontWeight.bold))),
-        const DataCell(Text('Target', style: TextStyle(color: Colors.blue))),
+        DataCell(Text(l10n.target, style: const TextStyle(color: Colors.blue))),
         ...months.map((m) => DataCell(Text('${targets[m] ?? 0}'))),
       ]));
 
       // Achieved Row
       rows.add(DataRow(cells: [
         const DataCell(Text('')), // Empty for category to avoid repetition
-        const DataCell(Text('Achieved', style: TextStyle(color: AppTheme.success))),
+        DataCell(Text(l10n.achieved, style: const TextStyle(color: AppTheme.success))),
         ...months.map((m) => DataCell(Text('${achieved[m] ?? 0}'))),
       ]));
 
       // Shortfall Row
       rows.add(DataRow(cells: [
         const DataCell(Text('')),
-        const DataCell(Text('Shortfall', style: TextStyle(color: AppTheme.danger))),
+        DataCell(Text(l10n.shortfall, style: const TextStyle(color: AppTheme.danger))),
         ...months.map((m) {
           final s = shortfall[m] ?? 0;
           return DataCell(Text('$s', style: TextStyle(color: (s as num) > 0 ? AppTheme.danger : AppTheme.success)));

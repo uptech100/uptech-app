@@ -147,6 +147,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dashboard'**
   String get dashboard;
+
+  /// No description provided for @overview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get overview;
+
+  /// No description provided for @aopAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'AOP Analysis'**
+  String get aopAnalysis;
+
+  /// No description provided for @totalUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Users'**
+  String get totalUsers;
+
+  /// No description provided for @totalDepartments.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Departments'**
+  String get totalDepartments;
+
+  /// No description provided for @activeUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Users'**
+  String get activeUsers;
+
+  /// No description provided for @manageRoles.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Roles'**
+  String get manageRoles;
+
+  /// No description provided for @setup.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup'**
+  String get setup;
+
+  /// No description provided for @manageChecklists.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Checklists'**
+  String get manageChecklists;
+
+  /// No description provided for @tasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get tasks;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get type;
+
+  /// No description provided for @target.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get target;
+
+  /// No description provided for @achieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Achieved'**
+  String get achieved;
+
+  /// No description provided for @shortfall.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortfall'**
+  String get shortfall;
+
+  /// No description provided for @noAopData.
+  ///
+  /// In en, this message translates to:
+  /// **'No AOP Data available'**
+  String get noAopData;
+
+  /// No description provided for @myMis.
+  ///
+  /// In en, this message translates to:
+  /// **'My MIS'**
+  String get myMis;
+
+  /// No description provided for @workerMis.
+  ///
+  /// In en, this message translates to:
+  /// **'Worker MIS'**
+  String get workerMis;
+
+  /// No description provided for @qcReports.
+  ///
+  /// In en, this message translates to:
+  /// **'QC Reports'**
+  String get qcReports;
+
+  /// No description provided for @workLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Work Logs'**
+  String get workLogs;
+
+  /// No description provided for @ratings.
+  ///
+  /// In en, this message translates to:
+  /// **'Ratings'**
+  String get ratings;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
+
+  /// No description provided for @adminDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin Dashboard'**
+  String get adminDashboard;
+
+  /// No description provided for @departments.
+  ///
+  /// In en, this message translates to:
+  /// **'Departments'**
+  String get departments;
+
+  /// No description provided for @users.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get users;
+
+  /// No description provided for @processes.
+  ///
+  /// In en, this message translates to:
+  /// **'Processes'**
+  String get processes;
+
+  /// No description provided for @products.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get products;
+
+  /// No description provided for @misReports.
+  ///
+  /// In en, this message translates to:
+  /// **'MIS Reports'**
+  String get misReports;
+
+  /// No description provided for @peerRatings.
+  ///
+  /// In en, this message translates to:
+  /// **'Peer Ratings'**
+  String get peerRatings;
 }
 
 class _AppLocalizationsDelegate

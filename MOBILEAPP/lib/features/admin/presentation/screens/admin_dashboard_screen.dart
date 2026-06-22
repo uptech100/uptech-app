@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../providers/admin_providers.dart';
 import 'role_management_screen.dart';
 import 'checklist_management_screen.dart';
@@ -11,16 +12,18 @@ class AdminDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: const TabBar(
+        appBar: TabBar(
           labelColor: AppTheme.primaryColor,
           unselectedLabelColor: Colors.grey,
           indicatorColor: AppTheme.primaryColor,
           tabs: [
-            Tab(text: 'Overview', icon: Icon(Icons.dashboard)),
-            Tab(text: 'AOP Analysis', icon: Icon(Icons.analytics)),
+            Tab(text: l10n.overview, icon: const Icon(Icons.dashboard)),
+            Tab(text: l10n.aopAnalysis, icon: const Icon(Icons.analytics)),
           ],
         ),
         body: TabBarView(
@@ -35,6 +38,7 @@ class AdminDashboardScreen extends ConsumerWidget {
 
   Widget _buildOverviewTab(BuildContext context, WidgetRef ref) {
     final statsAsync = ref.watch(adminDashboardStatsProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return statsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -54,9 +58,9 @@ class AdminDashboardScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Overview',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                Text(
+                  l10n.overview,
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
                 ),
                 const SizedBox(height: 24),
                 GridView.count(
@@ -68,29 +72,29 @@ class AdminDashboardScreen extends ConsumerWidget {
                   children: [
                     _buildStatCard(
                       context,
-                      title: 'Total Users',
+                      title: l10n.totalUsers,
                       value: stats['totalUsers'].toString(),
                       icon: Icons.people_outline,
                       color: Colors.blue,
                     ),
                     _buildStatCard(
                       context,
-                      title: 'Total Departments',
+                      title: l10n.totalDepartments,
                       value: stats['totalDepartments'].toString(),
                       icon: Icons.domain,
                       color: Colors.purple,
                     ),
                     _buildStatCard(
                       context,
-                      title: 'Active Users',
+                      title: l10n.activeUsers,
                       value: stats['activeUsers'].toString(),
                       icon: Icons.check_circle_outline,
                       color: AppTheme.success,
                     ),
                     _buildStatCard(
                       context,
-                      title: 'Manage Roles',
-                      value: 'Setup',
+                      title: l10n.manageRoles,
+                      value: l10n.setup,
                       icon: Icons.security,
                       color: Colors.orange,
                       onTap: () {
@@ -101,8 +105,8 @@ class AdminDashboardScreen extends ConsumerWidget {
                     ),
                     _buildStatCard(
                       context,
-                      title: 'Manage Checklists',
-                      value: 'Tasks',
+                      title: l10n.manageChecklists,
+                      value: l10n.tasks,
                       icon: Icons.checklist,
                       color: Colors.teal,
                       onTap: () {

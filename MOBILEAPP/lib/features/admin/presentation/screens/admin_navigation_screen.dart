@@ -8,6 +8,7 @@ import '../../../ratings/presentation/screens/admin_ratings_screen.dart';
 import '../screens/mis_reports_screen.dart';
 import '../screens/worker_mis_screen.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/l10n/app_localizations.dart';
 
 class AdminNavigationScreen extends StatefulWidget {
   const AdminNavigationScreen({super.key});
@@ -30,22 +31,28 @@ class _AdminNavigationScreenState extends State<AdminNavigationScreen> {
     const WorkerMisScreen(),
   ];
 
-  final List<String> _titles = [
-    'Admin Dashboard',
-    'Departments',
-    'Users',
-    'Processes',
-    'Products',
-    'Peer Ratings',
-    'MIS Reports',
-    'Worker MIS',
-  ];
+  List<String> _getTitles(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      l10n.adminDashboard,
+      l10n.departments,
+      l10n.users,
+      l10n.processes,
+      l10n.products,
+      l10n.peerRatings,
+      l10n.misReports,
+      l10n.workerMis,
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final titles = _getTitles(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(_titles[_currentIndex]),
+        title: Text(titles[_currentIndex]),
         leading: const BackButton(color: Colors.white),
       ),
       body: IndexedStack(
@@ -64,46 +71,46 @@ class _AdminNavigationScreenState extends State<AdminNavigationScreen> {
           unselectedItemColor: Colors.grey,
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard_outlined),
-              activeIcon: Icon(Icons.dashboard),
-              label: 'Dashboard',
+              icon: const Icon(Icons.dashboard_outlined),
+              activeIcon: const Icon(Icons.dashboard),
+              label: l10n.dashboard,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.domain_outlined),
-              activeIcon: Icon(Icons.domain),
-              label: 'Departments',
+              icon: const Icon(Icons.domain_outlined),
+              activeIcon: const Icon(Icons.domain),
+              label: l10n.departments,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.people_outline),
-              activeIcon: Icon(Icons.people),
-              label: 'Users',
+              icon: const Icon(Icons.people_outline),
+              activeIcon: const Icon(Icons.people),
+              label: l10n.users,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.precision_manufacturing_outlined),
-              activeIcon: Icon(Icons.precision_manufacturing),
-              label: 'Processes',
+              icon: const Icon(Icons.precision_manufacturing_outlined),
+              activeIcon: const Icon(Icons.precision_manufacturing),
+              label: l10n.processes,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.inventory_2_outlined),
-              activeIcon: Icon(Icons.inventory_2),
-              label: 'Products',
+              icon: const Icon(Icons.inventory_2_outlined),
+              activeIcon: const Icon(Icons.inventory_2),
+              label: l10n.products,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.star_half_outlined),
-              activeIcon: Icon(Icons.star),
-              label: 'Ratings',
+              icon: const Icon(Icons.star_half_outlined),
+              activeIcon: const Icon(Icons.star),
+              label: l10n.ratings,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.analytics_outlined),
-              activeIcon: Icon(Icons.analytics),
-              label: 'Gen. MIS',
+              icon: const Icon(Icons.analytics_outlined),
+              activeIcon: const Icon(Icons.analytics),
+              label: l10n.misReports,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.insights_outlined),
-              activeIcon: Icon(Icons.insights),
-              label: 'Worker MIS',
+              icon: const Icon(Icons.insights_outlined),
+              activeIcon: const Icon(Icons.insights),
+              label: l10n.workerMis,
             ),
           ],
         ),
