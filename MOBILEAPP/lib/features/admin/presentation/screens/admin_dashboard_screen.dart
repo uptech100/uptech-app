@@ -5,7 +5,7 @@ import '../../../../core/l10n/app_localizations.dart';
 import '../providers/admin_providers.dart';
 import 'role_management_screen.dart';
 import 'checklist_management_screen.dart';
-import 'aop_analysis_screen.dart';
+import 'aop_dashboard_screen.dart';
 
 class AdminDashboardScreen extends ConsumerWidget {
   const AdminDashboardScreen({super.key});
@@ -29,7 +29,7 @@ class AdminDashboardScreen extends ConsumerWidget {
         body: TabBarView(
           children: [
             _buildOverviewTab(context, ref),
-            const AopAnalysisScreen(),
+            const AopDashboardScreen(),
           ],
         ),
       ),
